@@ -7,9 +7,14 @@ defmodule Alice.Application do
 
   @impl true
   def start(_type, _args) do
-    children = [
-      {Plug.Cowboy, scheme: :http, plug: Alice.Plug, port: 4000}
-    ]
+    start_server? = Application.fetch_env!(:alice, :server)
+
+    children =
+      if start_server? do
+        [{Plug.Cowboy, scheme: :http, plug: Alice.Plug, port: 4000}]
+      else
+        []
+      end
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options

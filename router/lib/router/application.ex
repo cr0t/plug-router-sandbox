@@ -1,4 +1,4 @@
-defmodule Bob.Application do
+defmodule Router.Application do
   # See https://hexdocs.pm/elixir/Application.html
   # for more information on OTP Applications
   @moduledoc false
@@ -7,18 +7,13 @@ defmodule Bob.Application do
 
   @impl true
   def start(_type, _args) do
-    start_server? = Application.fetch_env!(:bob, :server)
-
-    children =
-      if start_server? do
-        [{Plug.Cowboy, scheme: :http, plug: Bob.Plug, port: 4000}]
-      else
-        []
-      end
+    children = [
+      {Plug.Cowboy, scheme: :http, plug: Router.Dispatcher, port: 4000}
+    ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Bob.Supervisor]
+    opts = [strategy: :one_for_one, name: Router.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
